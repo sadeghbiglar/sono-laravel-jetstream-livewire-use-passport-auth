@@ -29,4 +29,21 @@ class UltrasoundRecordController extends Controller
      
         return back()->withErrors('Failed to create record');
     }
+    public function fetchData(Request $request)
+    {
+        // گرفتن مقدار ID از درخواست
+        $id = $request->input('id');
+
+        // ارسال درخواست به API خارجی
+        $response = Http::get("https://apitester.ir/api/Categories/{$id}");
+
+        // چک کردن وضعیت پاسخ
+        if ($response->successful()) {
+            // بازگرداندن نتیجه به صفحه
+            return back()->with('result', $response->json());
+        } else {
+            // مدیریت خطاها
+            return back()->withErrors('مشکلی در فراخوانی API رخ داده است.');
+        }
+    }
 }

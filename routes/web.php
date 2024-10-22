@@ -20,3 +20,5 @@ Route::middleware([
 
 Route::get('/ultrasound/create', [UltrasoundRecordController::class, 'create'])->name('ultrasound.create');
 Route::post('/ultrasound/store', [UltrasoundRecordController::class, 'store'])->name('ultrasound.store');
+// در فایل routes/web.php
+Route::post('/fetch-data', [UltrasoundRecordController::class, 'fetchData'])->name('fetch.data');

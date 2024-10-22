@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h2>ثبت اطلاعات سونوگرافی</h2>
-        <form action="{{ route('ultrasound.store') }}" method="POST">
+<div class="container">
+    <h2>ثبت اطلاعات سونوگرافی</h2>
+    <form action="{{ route('ultrasound.store') }}" method="POST">
         @csrf
         <div class="form-group">
             <label for="patient_name">نام بیمار</label>
@@ -43,5 +43,61 @@
         </div>
         <button type="submit" class="btn btn-primary">ثبت</button>
     </form>
+    <form id="fetch-data-form">
+        <div>
+            <label for="category_id">Enter Category ID:</label>
+            <input type="text" id="category_id" name="category_id" required>
+        </div>
+        <button type="button" onclick="fetchData()">Fetch Data</button>
+    </form>
+
+    <div id="result"></div>
+    
+
+    <!-- فرم جدید برای ارسال درخواست API -->
+<form action="{{ route('fetch.data') }}" method="POST">
+    @csrf
+    <div>
+        <label for="id">Enter ID:</label>
+        <input type="text" name="id" id="id" required>
     </div>
+    <button type="submit">Fetch Data</button>
+</form>
+
+<!-- نمایش نتیجه API -->
+@if(session('result'))
+    <div>
+        <h3>Result:</h3>
+        <pre>{{ json_encode(session('result'), JSON_PRETTY_PRINT) }}</pre>
+    </div>
+@endif
+
+<!-- نمایش پیام‌های خطا -->
+@if($errors->any())
+    <div>
+        <p>{{ $errors->first() }}</p>
+    </div>
+@endif
+
+
+
+
+    <!-- JavaScript code -->
+<script>
+    function fetchData() {
+        var categoryId = document.getElementById('category_id').value;
+
+        fetch(`https://apitester.ir/api/Categories/${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Display the result
+                document.getElementById('result').innerHTML = JSON.stringify(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('result').innerHTML = 'Error fetching data.';
+            });
+    }
+</script>
+</div>
 @endsection
