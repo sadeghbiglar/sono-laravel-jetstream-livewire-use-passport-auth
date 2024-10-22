@@ -21,13 +21,15 @@ class AuthenticateUser
             $userData = $response->json();
 
             // بازیابی یا ایجاد کاربر
-            $user = User::firstOrCreate(
+            $user = User::updateOrCreate(
                 ['email' => $userData['user']['email']],
                 [
                     'name' => $userData['user']['name'],
                     'password' => bcrypt('default-password'), // رمز عبور پیش‌فرض
                 ]
             );
+        //    dd($userData['access_token']); // اطمینان از اینکه 'token' در پاسخ وجود دارد
+        session(['api_token' => $userData['access_token']]);
 
             // ورود کاربر به سیستم
             return $user; // اینجا شیء کاربر را بازگردانید
