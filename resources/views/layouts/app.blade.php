@@ -13,6 +13,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+       
 
         <!-- Styles -->
         @livewireStyles
@@ -42,5 +43,7 @@
         @stack('modals')
 
         @livewireScripts
+        @vite('resources/js/app.js')
+
     </body>
 </html>

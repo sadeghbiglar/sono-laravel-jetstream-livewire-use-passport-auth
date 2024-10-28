@@ -46,4 +46,27 @@ class UltrasoundRecordController extends Controller
             return back()->withErrors('مشکلی در فراخوانی API رخ داده است.');
         }
     }
+
+    public function fetchData_auth(Request $request)
+    {
+        $accessToken = session('api_token');
+        
+        // گرفتن مقدار ID از درخواست
+        $id = $request->input('idd');
+       
+        // ارسال درخواست به API خارجی
+        $response = Http::withToken($accessToken)->get("https://apitester.ir/api/CategoriesWithTokenAuth/{$id}");
+       /*  $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $accessToken,
+        ])->get("https://apitester.ir/api/CategoriesWithTokenAuth/{$id}"); */
+        // dd($response);
+        // چک کردن وضعیت پاسخ
+        if ($response->successful()) {
+            // بازگرداندن نتیجه به صفحه
+            return back()->with('result', $response->json());
+        } else {
+            // مدیریت خطاها
+            return back()->withErrors('مشکلی در فراخوانی API رخ داده است.');
+        }
+    }
 }

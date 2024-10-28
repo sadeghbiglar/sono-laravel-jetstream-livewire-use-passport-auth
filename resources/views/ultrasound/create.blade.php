@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <h2>ثبت اطلاعات سونوگرافی</h2>
     <form action="{{ route('ultrasound.store') }}" method="POST">
@@ -79,6 +80,33 @@
     </div>
 @endif
 
+<!-- api-with auth -->
+
+
+   <!-- فرم جدید برای ارسال درخواست API -->
+   <form action="{{ route('fetch.data_auth') }}" method="POST">
+    @csrf
+    <div>
+        <label for="idd">Enter ID with auth:</label>
+        <input type="text" name="idd" id="idd" required>
+    </div>
+    <button type="submit">Fetch Data</button>
+</form>
+
+<!-- نمایش نتیجه API -->
+@if(session('result'))
+    <div>
+        <h3>Result:</h3>
+        <pre>{{ json_encode(session('result'), JSON_PRETTY_PRINT) }}</pre>
+    </div>
+@endif
+
+<!-- نمایش پیام‌های خطا -->
+@if($errors->any())
+    <div>
+        <p>{{ $errors->first() }}</p>
+    </div>
+@endif
 
 
 
