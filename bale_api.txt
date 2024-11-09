@@ -1,0 +1,43 @@
+ public function sendOtp(Request $request)
+    {
+        $mobile = $request->input('mobile');
+        $otpCode = rand(100000, 999999); // تولید کد OTP تصادفی
+    
+        // ارسال پیام به بازو با استفاده از API بله
+        $response = Http::post("https://tapi.bale.ai/bot869096853:r9W6q195DomYh6lyRtF1nOZJn2SWPoigMxEepzrF/sendMessage", [
+           // 'chat_id' => $mobile, // شناسه کاربر یا گروه
+           'chat_id'=> '@logview',
+            'text' => "کد یکبار مصرف شما: $otpCode", // متن پیام
+        ]);
+    dd($response->json());
+        if ($response->successful()) {
+            // ذخیره شماره موبایل و کد OTP در Session برای تأیید بعدی
+            session(['mobile' => $mobile, 'otp_code' => $otpCode]);
+    
+            return redirect()->route('verify-otp')->with('status', 'کد OTP ارسال شد.');
+        } else {
+            return back()->withErrors('مشکلی در ارسال کد OTP رخ داد.');
+        }
+    }
+    
+--------------------------------------
+
+public function verify(Request $request)
+{
+    $request->validate([
+        'otp' => 'required|string',
+    ]);
+
+    $enteredOtp = strval( $request->input('otp'));
+    $storedOtp =strval( session('otp_code'));
+   // $storedOtp = '200200';
+//dd($enteredOtp,$storedOtp);
+    // مقایسه کد وارد شده با کد ذخیره شده
+    if ($enteredOtp === $storedOtp) {
+        // هدایت به داشبورد در صورت صحت کد OTP
+        return redirect()->route('dashboard');
+    } else {
+        return back()->withErrors('کد OTP نادرست است.');
+    }
+}
+
